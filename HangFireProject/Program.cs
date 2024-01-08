@@ -1,7 +1,15 @@
+using Hangfire;
+using HangFireProject.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHangfire(x =>
+    x.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 var app = builder.Build();
 
@@ -12,6 +20,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseHangfireDashboard();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
