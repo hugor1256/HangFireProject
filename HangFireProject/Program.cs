@@ -18,6 +18,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.Use((context, next) =>
+{
+    if (context.Request.Path != "/") return next();
+    context.Response.Redirect("/hangfire");
+    return Task.CompletedTask;
+
+});
+
 app.UseHangfireDashboard();
 
 app.UseHttpsRedirection();
